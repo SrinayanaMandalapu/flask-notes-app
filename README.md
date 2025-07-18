@@ -35,13 +35,16 @@ A minimal, secure, and stylish **Notes Application** built with **Flask**, featu
    cd flask-notes-app
 
 2. **Create a virtual environment**
+    ```bash
     python -m venv venv
     source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 3. **Install dependencies**
+    ```bash
     pip install -r requirements.txt
 
 4. **Run the app**
+    ```bash
     python run.py
 
 5. **Open in browser**
