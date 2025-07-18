@@ -10,25 +10,39 @@ auth = Blueprint('auth', __name__)
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user and check_password_hash(user.password, form.password.data):
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        user = User.query.filter_by(email=email).first()
+        if user and check_password_hash(user.password, password):
             login_user(user)
-            return redirect(url_for('main.home'))
-        flash('Invalid email or password')
-    return render_template('login.html', form=form)
+            return redirect(url_for('notes.view_notes'))  # Redirect to notes after login
+        else:
+            flash('Invalid email or password.', category='error')
+    return render_template('login.html', form = form)
+
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        hashed_pw = generate_password_hash(form.password.data, method='pbkdf2:sha256')
-        new_user = User(email=form.email.data, password=hashed_pw)
+        email = form.email.data
+        password = form.password.data
+
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            flash('Email already registered. Please log in.', 'warning')
+            return redirect(url_for('auth.login'))
+
+        new_user = User(email=email, password=generate_password_hash(password))
         db.session.add(new_user)
         db.session.commit()
-        return redirect(url_for('auth.login'))
-    return render_template('register.html', form=form)
 
+        login_user(new_user)
+        return redirect(url_for('notes.view_notes'))
+
+    return render_template('register.html', form=form)
 @auth.route('/logout')
 @login_required
 def logout():
