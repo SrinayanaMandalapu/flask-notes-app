@@ -22,8 +22,11 @@ def create_app():
 
     from .routes import main
     from .auth import auth as auth_blueprint
+    from .notes import notes as notes_blueprint
+
 
     app.register_blueprint(main)
     app.register_blueprint(auth_blueprint)
+    app.register_blueprint(notes_blueprint)
 
     return app

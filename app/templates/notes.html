@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Your Notes</h2>
+<form method="POST" action="{{ url_for('notes.add_note') }}">
+    <textarea name="content" required></textarea><br>
+    <button type="submit">Add Note</button>
+</form>
+<hr>
+<ul>
+{% for note in notes %}
+    <li>{{ note.content }} - <a href="{{ url_for('notes.delete_note', id=note.id) }}">Delete</a></li>
+{% endfor %}
+</ul>
+{% endblock %}
